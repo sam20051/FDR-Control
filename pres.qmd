@@ -17,18 +17,16 @@ format:
 execute:
     warning: false
 ---
-# False Discovery Rate Control
+# Why False Discovery Rate Matters
 
-## Why False Discovery Rate Matters
+# Classical Approach vs. Modern Methods
 
-## Classical Approach vs. Modern Methods
+# Definitions
 
-## Definitions
+# The 4 Methods
 
-## The 4 Methods
+# Simulation
 
-## Simulation
+# Key Takeaways
 
-## Key Takeaways
-
-## References
+# References
