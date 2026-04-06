@@ -18,14 +18,463 @@ execute:
     warning: false
 ---
 # Why False Discovery Rate Matters
+## Why Do We Need FDR Control?
+
+- In modern data science, we often test hundreds or thousands of hypotheses
+- Examples:
+    - Genomics: testing gene expression differences
+    - A/B testing: evaluating multiple features
+    - Social science: multiple survey questions
+
+
+---
+
+## The Multiple Testing Problem
+
+- Suppose we test **m = 1000 hypotheses**
+- Each test uses significance level **α = 0.05**
+- Even if ALL null hypotheses are true:
+
+\[
+\text{Expected false positives} = 0.05 \times 1000 = 50
+\]
+
+- We may incorrectly reject **dozens of hypotheses**
+
+---
+
+## Intuition: False Positives Add Up
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+np.random.seed(42)
+
+m = 1000
+pvals = np.random.uniform(0, 1, m)
+
+plt.hist(pvals, bins=30)
+plt.axvline(0.05)
+plt.title("P-values Under All Null Hypotheses")
+plt.xlabel("p-value")
+plt.ylabel("Frequency")
+plt.show()
+```
 
 # Classical Approach vs. Modern Methods
 
+## Classical Error Control: FWER
+
+- **FWER = Probability of at least one false positive**
+\[
+\text{FWER} = P(V \geq 1)
+\]
+
+- Goal: **Avoid any false discoveries**
+- Common method: **Bonferroni correction**
+
+\[
+\alpha_{adj} = \frac{\alpha}{m}
+\]
+
+- Reject if:
+\[
+p_i \leq \frac{\alpha}{m}
+\]
+
+---
+
+## Why FWER is Too Conservative
+
+- Example:
+  - \( m = 1000 \), \( \alpha = 0.05 \)
+  - Bonferroni threshold = **0.00005**
+
+- Very hard to detect real effects
+- Leads to:
+  - Few rejections
+  - Many **missed true signals (low power)**
+
+---
+
+## Modern Approach: False Discovery Rate (FDR)
+
+- Instead of eliminating all errors, control their proportion
+
+\[
+\text{FDR} = \mathbb{E} \left[ \frac{V}{R} \right]
+\]
+
+- Goal:
+  - Allow some false positives
+  - But limit their proportion among discoveries
+
+---
+
+## Intuition: FWER vs FDR
+
+- **FWER mindset:**
+  > “I want ZERO false positives.”
+
+- **FDR mindset:**
+  > “I can tolerate some false positives, as long as most discoveries are correct.”
+
+---
+
+## Visual Comparison
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+np.random.seed(0)
+pvals = np.sort(np.random.uniform(size=1000))
+
+m = len(pvals)
+alpha = 0.05
+
+# Bonferroni threshold
+bonf = alpha / m
+
+# BH threshold line
+bh_line = [(i/m)*alpha for i in range(1, m+1)]
+
+plt.plot(pvals, label="Sorted p-values")
+plt.plot(bh_line, linestyle='--', label="BH threshold")
+plt.axhline(bonf, linestyle=':', label="Bonferroni threshold")
+
+plt.xlabel("Rank")
+plt.ylabel("p-value")
+plt.title("FWER vs FDR Thresholds")
+plt.legend()
+plt.show()
+```
+
 # Definitions
+
+## Measuring Errors in Multiple Testing
+
+- When testing many hypotheses, we track:
+
+|                      | Null True | Null False |
+|----------------------|----------|-----------|
+| Reject H₀           | False Positive (V) | True Positive (S) |
+| Do Not Reject H₀    | True Negative | False Negative |
+
+- Total rejections:
+\[
+R = V + S
+\]
+
+---
+
+## False Discovery Proportion (FDP)
+
+- The proportion of false discoveries among all discoveries:
+
+\[
+\text{FDP} = \frac{V}{R}
+\]
+
+- If no rejections (R = 0), define FDP = 0
+
+- Interpretation:
+  - FDP = 0 → all discoveries are correct
+  - FDP = 0.2 → 20% of discoveries are false
+
+---
+
+## False Discovery Rate (FDR)
+
+- The expected value of FDP:
+
+\[
+\text{FDR} = \mathbb{E}\left[\frac{V}{R}\right]
+\]
+
+- This is what we aim to control
+
+- Example:
+  - If FDR = 0.05
+  - Then on average, 5% of discoveries are false
+
+---
+
+## Why Expectation?
+
+- FDP varies from dataset to dataset
+- We cannot control it exactly every time
+
+- Instead, we control it **on average across experiments**
+
+This makes FDR practical for real-world data science
+
+---
+
+## Quick Example
+
+- Suppose we reject 100 hypotheses:
+  - 90 are true discoveries
+  - 10 are false discoveries
+
+\[
+\text{FDP} = \frac{10}{100} = 0.10
+\]
+
+- Over many experiments:
+  - The average FDP ≈ FDR
+
+---
+
+## Key Intuition
+
+- FDR does NOT eliminate false positives  
+- It **controls their proportion**
+
+> “Among all discoveries, most should be correct.”
+
+---
+
+## Transition
+
+- Now that we understand FDR…
+
+How do we actually control it in practice?  
+Let’s look at 4 different methods:
+- BH
+- BY
+- Storey (ST)
+- FWER (baseline)
 
 # The 4 Methods
 
+## Four Approaches to Error Control
+
+We compare four methods:
+
+- **FWER (Bonferroni)** – strict error control
+- **BH (Benjamini–Hochberg)** – standard FDR method
+- **BY (Benjamini–Yekutieli)** – FDR under dependence
+- **Storey (ST / q-values)** – adaptive FDR
+
+---
+
+## 1. FWER (Bonferroni)
+
+- Controls:
+\[
+P(V \geq 1)
+\]
+
+- Rule:
+\[
+p_i \leq \frac{\alpha}{m}
+\]
+
+- Pros:
+  - Very safe (almost no false positives)
+
+- Cons:
+  - Extremely conservative
+  - Low power (misses real signals)
+
+---
+
+## 2. BH (Benjamini–Hochberg)
+
+- Controls:
+\[
+\text{FDR} = \mathbb{E}[V/R]
+\]
+
+- Procedure:
+  1. Sort p-values
+  2. Find largest \( k \) such that:
+\[
+p_{(k)} \leq \frac{k}{m}\alpha
+\]
+
+- Pros:
+  - Good balance of power and error control
+  - Widely used
+
+- Cons:
+  - Assumes independence (or weak dependence)
+
+---
+
+## 3. BY (Benjamini–Yekutieli)
+
+- Modification of BH for **dependent tests**
+
+- Threshold:
+\[
+p_{(k)} \leq \frac{k}{m} \cdot \frac{\alpha}{\sum_{i=1}^m \frac{1}{i}}
+\]
+
+- Pros:
+  - Valid under arbitrary dependence
+
+- Cons:
+  - More conservative than BH
+  - Can reduce power significantly
+
+---
+
+## 4. Storey Method (ST / q-values)
+
+- Improves BH by estimating:
+\[
+\pi_0 = \text{proportion of true nulls}
+\]
+
+- Idea:
+  - If many hypotheses are false → increase power
+
+- Pros:
+  - More powerful when signals are present
+  - Adaptive
+
+- Cons:
+  - Requires estimating \(\pi_0\)
+  - Can be unstable if estimation is poor
+
+---
+
+## Visual Comparison
+
+```{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+np.random.seed(1)
+pvals = np.sort(np.random.uniform(size=1000))
+m = len(pvals)
+alpha = 0.05
+
+bh = [(i/m)*alpha for i in range(1, m+1)]
+by = [(i/m)*alpha / np.sum(1/np.arange(1, m+1)) for i in range(1, m+1)]
+bonf = alpha / m
+
+plt.plot(pvals, label="p-values")
+plt.plot(bh, '--', label="BH")
+plt.plot(by, ':', label="BY")
+plt.axhline(bonf, linestyle='-.', label="Bonferroni")
+
+plt.xlabel("Rank")
+plt.ylabel("Threshold")
+plt.title("Comparison of Methods")
+plt.legend()
+plt.show()
+```
+
 # Simulation
+
+## Simulation: Comparing Methods
+
+Goal:
+- Compare **FWER, BH, BY, and Storey**
+- Evaluate:
+  - Number of rejections
+  - False Discovery Rate (FDR)
+  - Power (true positives)
+
+---
+
+## Simulation Setup
+
+- Total hypotheses: \( m = 1000 \)
+- Proportion of true signals: \( \pi_1 = 0.1 \)
+- Generate:
+  - Null p-values ~ Uniform(0,1)
+  - Signal p-values ~ Beta(0.5, 1)
+
+- Apply:
+  - Bonferroni (FWER)
+  - BH
+  - BY
+  - Storey (two-stage BH approximation)
+
+---
+
+## Generate Data
+
+```{python}
+import numpy as np
+
+np.random.seed(42)
+
+m = 1000
+pi1 = 0.1
+m1 = int(pi1 * m)
+m0 = m - m1
+
+# null and signal p-values
+p_null = np.random.uniform(0, 1, m0)
+p_signal = np.random.beta(0.5, 1, m1)
+
+pvals = np.concatenate([p_null, p_signal])
+
+# ground truth (0 = null, 1 = signal)
+truth = np.array([0]*m0 + [1]*m1)
+
+from statsmodels.stats.multitest import multipletests
+
+alpha = 0.05
+
+methods = {
+    "Bonferroni": "bonferroni",
+    "BH": "fdr_bh",
+    "BY": "fdr_by",
+    "Storey (approx)": "fdr_tsbh"
+}
+
+results = {}
+
+for name, method in methods.items():
+    reject, _, _, _ = multipletests(pvals, alpha=alpha, method=method)
+    
+    R = reject.sum()
+    V = ((reject == 1) & (truth == 0)).sum()
+    S = ((reject == 1) & (truth == 1)).sum()
+    
+    fdp = V / R if R > 0 else 0
+    power = S / m1
+    
+    results[name] = (R, fdp, power)
+
+results
+
+
+import matplotlib.pyplot as plt
+
+names = list(results.keys())
+R_vals = [results[n][0] for n in names]
+fdp_vals = [results[n][1] for n in names]
+power_vals = [results[n][2] for n in names]
+
+x = np.arange(len(names))
+
+plt.figure()
+plt.bar(x, R_vals)
+plt.xticks(x, names)
+plt.title("Number of Discoveries")
+plt.show()
+
+plt.figure()
+plt.bar(x, fdp_vals)
+plt.xticks(x, names)
+plt.title("False Discovery Proportion")
+plt.show()
+
+plt.figure()
+plt.bar(x, power_vals)
+plt.xticks(x, names)
+plt.title("Power")
+plt.show()
+```
+
 
 # Key Takeaways
 
