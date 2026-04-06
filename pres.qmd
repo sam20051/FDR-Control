@@ -44,7 +44,7 @@ $$
 ---
 
 **False Positives Add Up**
-
+- The histogram below shows 1000 p-values generated under the null hypothesis (uniformly distributed between 0 and 1). Even though all nulls are true, we expect about 5% of them (around 50) to be below the 0.05 threshold, leading to false discoveries if we use the standard cutoff without adjustment.
 ```{python}
 import numpy as np
 import matplotlib.pyplot as plt
@@ -66,22 +66,25 @@ plt.show()
 
 ## Classical Error Control: FWER
 
-- **FWER = Probability of at least one false positive**
+When controlling errors in muliple testing, the traditional approach focuses on avoiding any false positives at all. This is known as controlling the **Family-Wise Error Rate (FWER)**.
+
+- FWER is defined as the probability of making at least one false discovery:
 $$
 \text{FWER} = P(V \geq 1)
 $$
 
-- Goal: **Avoid any false discoveries**
-- Common method: **Bonferroni correction**
+- A common method to control FWER is the **Bonferroni correction**, 
 
 $$
 \alpha_{adj} = \frac{\alpha}{m}
 $$
 
-- Reject if:
+- A hypothesis is rejected if its p-value satisfies:
 $$
 p_i \leq \frac{\alpha}{m}
 $$
+
+For example, if we have 1000 tests and want to maintain an overall α of 0.05, the Bonferroni threshold would be 0.00005, which is extremely lenient and often leads to very few discoveries, even when there are true effects present.
 
 ---
 
@@ -92,9 +95,7 @@ $$
   - Bonferroni threshold = **0.00005**
 
 - Very hard to detect real effects
-- Leads to:
-  - Few rejections
-  - Many missed true signals (low power)
+- While it minimizes false positives, it also leads to many false negatives (missed discoveries)
 
 ---
 
@@ -124,29 +125,68 @@ $$
 
 **Visual Comparison**
 
+The figure below illustrates the difference between FWER and FDR thresholds. The dashed line represents the BH threshold for FDR control, which allows for more discoveries while controlling the expected proportion of false positives. The dotted line represents the Bonferroni threshold for FWER control, which is much lower and results in fewer discoveries.
+
 ```{python}
 import numpy as np
 import matplotlib.pyplot as plt
 
 np.random.seed(0)
-pvals = np.sort(np.random.uniform(size=1000))
 
-m = len(pvals)
+m = 1000
+pi1 = 0.05  # 5% true signals
+m1 = int(m * pi1)
+m0 = m - m1
+
+# Null p-values ~ Uniform(0,1)
+p_null = np.random.uniform(0, 1, m0)
+
+# Combine and sort
+pvals = np.sort(np.concatenate([p_null, p_signal]))
+
+# Thresholds
 alpha = 0.05
-
-# Bonferroni threshold
 bonf = alpha / m
-
-# BH threshold line
 bh_line = [(i/m)*alpha for i in range(1, m+1)]
 
+# Plot
+plt.figure(figsize=(6,4))
 plt.plot(pvals, label="Sorted p-values")
-plt.plot(bh_line, linestyle='--', label="BH threshold")
-plt.axhline(bonf, linestyle=':', label="Bonferroni threshold")
+plt.plot(bh_line, '--', label="BH threshold")
+plt.axhline(bonf, color='red', linestyle=':', label="Bonferroni threshold")
 
 plt.xlabel("Rank")
 plt.ylabel("p-value")
-plt.title("FWER vs FDR Thresholds")
+plt.title("FWER vs FDR Thresholds (with strong signals)")
+plt.legend()
+plt.show()
+
+
+# Null p-values
+p_null = np.random.uniform(0, 1, m0)
+# Strong signals
+
+# Combine and sort
+pvals = np.sort(np.concatenate([p_null, p_signal]))
+
+# Thresholds
+alpha = 0.05
+bonf = alpha / m
+bh_line = [(i/m)*alpha for i in range(1, m+1)]
+
+# Plot
+plt.figure(figsize=(6,4))
+plt.plot(pvals, label="Sorted p-values")
+plt.plot(bh_line, '--', label="BH threshold")
+plt.axhline(bonf, color='red', linestyle=':', label="Bonferroni threshold")
+
+# Zoom in on the bottom-left
+plt.xlim(0, 100)  # first 100 ranks
+plt.ylim(0, 0.01)  # very small p-values
+
+plt.xlabel("Rank")
+plt.ylabel("p-value")
+plt.title("Zoomed View: Small p-values and Thresholds")
 plt.legend()
 plt.show()
 ```
