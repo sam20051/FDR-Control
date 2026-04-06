@@ -31,8 +31,8 @@ execute:
 
 **The Multiple Testing Problem**
 
-- Suppose we test **m = 1000 hypotheses**
-- Each test uses significance level **α = 0.05**
+- Suppose we test $m = 1000$ hypotheses
+- Each test uses significance level $\alpha = 0.05$
 - Even if ALL null hypotheses are true:
 
 $$
@@ -43,7 +43,7 @@ $$
 
 ---
 
-**False Positives Add Up**
+**False Positives Visualization**
 - The histogram below shows 1000 p-values generated under the null hypothesis (uniformly distributed between 0 and 1). Even though all nulls are true, we expect about 5% of them (around 50) to be below the 0.05 threshold, leading to false discoveries if we use the standard cutoff without adjustment.
 ```{python}
 import numpy as np
@@ -165,7 +165,7 @@ $$
 p_i \leq \frac{\alpha}{m}
 $$
 
-For example, if we have 1000 tests and want to maintain an overall α of 0.05, the Bonferroni threshold would be 0.00005, which is extremely strict and often leads to very few discoveries, even when there are true effects present.
+For example, if we have 1000 tests and want to maintain an overall $\alpha$ of 0.05, the Bonferroni threshold would be 0.00005, which is extremely strict and often leads to very few discoveries, even when there are true effects present.
 
 ---
 
@@ -217,10 +217,10 @@ $$
 **Mindset: FWER vs FDR**
 
 - **FWER mindset:**
-  > “I want ZERO false positives.”
+   “I want ZERO false positives.”
 
 - **FDR mindset:**
-  > “I can tolerate some false positives, as long as most discoveries are correct.”
+  “I can tolerate some false positives, as long as most discoveries are correct.”
 
 ---
 
@@ -298,7 +298,7 @@ plt.axhline(bonf, color='red', linestyle=':', label="Bonferroni threshold")
 
 plt.xlabel("Rank")
 plt.ylabel("p-value")
-plt.title("FWER vs FDR Thresholds (with strong signals)")
+plt.title("FWER vs FDR Thresholds")
 plt.legend()
 plt.show()
 
@@ -315,7 +315,7 @@ plt.ylim(0, 0.01)
 
 plt.xlabel("Rank")
 plt.ylabel("p-value")
-plt.title("Zoomed View: Small p-values and Thresholds")
+plt.title("Zoomed View: FWER vs FDR Thresholds")
 plt.legend()
 plt.show()
 ```
@@ -427,7 +427,7 @@ plt.plot(by, ':', label="BY")
 plt.axhline(bonf, linestyle='-.', label="Bonferroni")
 plt.xlabel("Rank")
 plt.ylabel("p-value / Threshold")
-plt.title("Small Number of Hypotheses with Strong Signals")
+plt.title("FWER vs FDR Thresholds")
 plt.legend()
 plt.show()
 ```
@@ -436,7 +436,6 @@ plt.show()
 
 ## Simulation: Comparing Methods
 
-Goal:
 - Compare **FWER, BH, and BY**
 - Evaluate:
   - Number of rejections
@@ -548,7 +547,9 @@ for bar, val in zip(bars, R_mean):
 
 plt.show()
 
-print("Interpretation: BH discovers the most signals, while Bonferroni is very conservative. BY is in between but closer to Bonferroni.")
+print("Interpretation:")
+print("BH discovers the most signals, while Bonferroni is very conservative."
+print("BY is in between but closer to Bonferroni.")
 
 # -------------------------------
 # FDP
@@ -565,7 +566,10 @@ for bar, val in zip(bars, fdp_mean):
 
 plt.show()
 
-print("Interpretation: All methods control false discoveries well. Bonferroni and BY have very low FDP, while BH has a slightly higher but still acceptable FDP.")
+print("Interpretation:")
+print("All methods control false discoveries well.")
+print("Bonferroni and BY have very low FDP."
+print("BH has a slightly higher but still acceptable FDP.")
 
 # -------------------------------
 # Power
@@ -582,7 +586,10 @@ for bar, val in zip(bars, power_mean):
 
 plt.show()
 
-print("Interpretation: BH has the highest power, meaning it detects the most true signals. BY has lower power than BH due to its conservativeness under dependence, while Bonferroni has the lowest power, missing many true discoveries.")
+print("Interpretation:")
+print("BH has the highest power, meaning it detects the most true signals.")
+print("BY has lower power than BH due to its conservativeness under dependence.")
+print("Bonferroni has the lowest power, missing many true discoveries.")
 ```
 
 # Key Takeaways
@@ -596,11 +603,11 @@ print("Interpretation: BH has the highest power, meaning it detects the most tru
    - FDR: controls the expected proportion of false discoveries, higher power.
 
 3. **Choosing a method**
-   |         Method           |                     When to Use                         |
-   |--------------------------|---------------------------------------------------------|
-   |     Bonferroni (FWER)    | Very strict control, few tests                          |
-   | BH (Benjamini–Hochberg)  | Default FDR control, independent/weakly dependent tests |
-   | BY (Benjamini–Yekutieli) | Dependent tests                                         |
+| Method                     | When to Use                                           |
+|----------------------------|------------------------------------------------------|
+| Bonferroni (FWER)          | Very strict control, few tests                       |
+| BH (Benjamini-Hochberg)    | Default FDR control, independent/weakly dependent tests |
+| BY (Benjamini-Yekutieli)   | Dependent tests                                      |
 
 4. **Simulation confirms intuition**
    - BH discovers more true signals but has a slightly higher FDP.
