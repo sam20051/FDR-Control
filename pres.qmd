@@ -315,7 +315,7 @@ $$
 - Procedure:
   1. Sort p-values
   2. Find largest \( k \) such that:
-  $$
+$$
 \[
 p_{(k)} \leq \frac{k}{m}\alpha
 \]
