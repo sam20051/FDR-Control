@@ -548,7 +548,7 @@ for bar, val in zip(bars, R_mean):
 plt.show()
 
 print("Interpretation:")
-print("BH discovers the most signals, while Bonferroni is very conservative."
+print("BH discovers the most signals, while Bonferroni is very conservative.")
 print("BY is in between but closer to Bonferroni.")
 
 # -------------------------------
@@ -568,7 +568,7 @@ plt.show()
 
 print("Interpretation:")
 print("All methods control false discoveries well.")
-print("Bonferroni and BY have very low FDP."
+print("Bonferroni and BY have very low FDP.")
 print("BH has a slightly higher but still acceptable FDP.")
 
 # -------------------------------
@@ -603,6 +603,7 @@ print("Bonferroni has the lowest power, missing many true discoveries.")
    - FDR: controls the expected proportion of false discoveries, higher power.
 
 3. **Choosing a method**
+
 | Method                     | When to Use                                           |
 |----------------------------|------------------------------------------------------|
 | Bonferroni (FWER)          | Very strict control, few tests                       |
