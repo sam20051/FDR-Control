@@ -145,7 +145,43 @@ $$
 
 **Visual Comparison**
 
-The figure below illustrates the difference between FWER and FDR thresholds. The dashed line represents the BH threshold for FDR control, which allows for more discoveries while controlling the expected proportion of false positives. The dotted line represents the Bonferroni threshold for FWER control, which is much lower and results in fewer discoveries.
+This figure illustrates how the Benjamini–Hochberg (BH) procedure works step by step:
+
+1. **Sort the p-values**
+   - The blue curve shows the p-values arranged from smallest to largest (by rank)
+
+2. **Construct the BH threshold**
+   - The dashed line represents the BH threshold:
+   $$
+   \frac{i}{m}\alpha
+   $$
+   - This line increases with rank, making the criterion less strict for larger p-values
+
+3. **Compare p-values to the threshold**
+   - For each rank $i$, compare the p-value to the corresponding point on the dashed line
+
+4. **Find the cutoff**
+   - Identify the largest rank $i$ where:
+   $$
+   p_{(i)} \le \frac{i}{m}\alpha
+   $$
+
+5. **Reject hypotheses**
+   - All p-values to the left of this cutoff are rejected  
+   - These are considered statistically significant discoveries  
+
+---
+
+**Interpretation**
+
+- The blue curve below the dashed line represents rejected hypotheses  
+- Because the BH threshold increases, it allows more rejections than a fixed cutoff  
+
+- In contrast, the Bonferroni line (horizontal) applies the same strict threshold to all tests:
+  - Only very small p-values are rejected  
+  - This leads to fewer discoveries but stronger error control  
+
+The BH procedure adapts to the data: it relaxes the threshold as rank increases, allowing more discoveries while still controlling the expected proportion of false positives.
 
 ```{python}
 import numpy as np
@@ -158,18 +194,24 @@ pi1 = 0.05  # 5% true signals
 m1 = int(m * pi1)
 m0 = m - m1
 
-# Null p-values ~ Uniform(0,1)
+# -----------------------------
+# Generate p-values
+# -----------------------------
 p_null = np.random.uniform(0, 1, m0)
+p_signal = np.random.beta(0.3, 1, m1)  # strong signals
 
-# Combine and sort
 pvals = np.sort(np.concatenate([p_null, p_signal]))
 
+# -----------------------------
 # Thresholds
+# -----------------------------
 alpha = 0.05
 bonf = alpha / m
 bh_line = [(i/m)*alpha for i in range(1, m+1)]
 
-# Plot
+# -----------------------------
+# Full Plot
+# -----------------------------
 plt.figure(figsize=(6,4))
 plt.plot(pvals, label="Sorted p-values")
 plt.plot(bh_line, '--', label="BH threshold")
@@ -181,28 +223,16 @@ plt.title("FWER vs FDR Thresholds (with strong signals)")
 plt.legend()
 plt.show()
 
-
-# Null p-values
-p_null = np.random.uniform(0, 1, m0)
-# Strong signals
-
-# Combine and sort
-pvals = np.sort(np.concatenate([p_null, p_signal]))
-
-# Thresholds
-alpha = 0.05
-bonf = alpha / m
-bh_line = [(i/m)*alpha for i in range(1, m+1)]
-
-# Plot
+# -----------------------------
+# Zoomed Plot
+# -----------------------------
 plt.figure(figsize=(6,4))
 plt.plot(pvals, label="Sorted p-values")
 plt.plot(bh_line, '--', label="BH threshold")
 plt.axhline(bonf, color='red', linestyle=':', label="Bonferroni threshold")
 
-# Zoom in on the bottom-left
-plt.xlim(0, 100)  # first 100 ranks
-plt.ylim(0, 0.01)  # very small p-values
+plt.xlim(0, 100)
+plt.ylim(0, 0.01)
 
 plt.xlabel("Rank")
 plt.ylabel("p-value")
