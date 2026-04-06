@@ -17,7 +17,7 @@ format:
 execute:
     warning: false
 ---
-# Why False Discovery Rate Matters
+## Why False Discovery Rate Matters
 **Why Do We Need FDR Control?**
 
 - In modern data science, we often test hundreds or thousands of hypotheses
@@ -62,7 +62,7 @@ plt.ylabel("Frequency")
 plt.show()
 ```
 
-# Definitions
+## Definitions
 
 **Measuring Errors in Multiple Testing**
 
@@ -80,7 +80,7 @@ $$
 
 ---
 
-## False Discovery Proportion (FDP)
+### False Discovery Proportion (FDP)
 
 - The proportion of false discoveries among all discoveries:
 
@@ -96,7 +96,7 @@ $$
 
 ---
 
-## False Discovery Rate (FDR)
+### False Discovery Rate (FDR)
 
 - The expected value of FDP:
 
@@ -143,9 +143,9 @@ $$
 
 > “Among all discoveries, most should be correct.”
 
-# Classical Approach vs. Modern Methods
+## Classical Approach vs. Modern Methods
 
-## Classical Error Control: FWER
+### Classical Error Control: FWER
 
 When controlling errors in muliple testing, the traditional approach focuses on avoiding any false positives at all. This is known as controlling the **Family-Wise Error Rate (FWER)**.
 
@@ -180,7 +180,7 @@ For example, if we have 1000 tests and want to maintain an overall $\alpha$ of 0
 
 ---
 
-## Modern Approach: False Discovery Rate (FDR)
+### Modern Approach: False Discovery Rate (FDR)
 
 - Instead of eliminating all errors, control their proportion
 
@@ -194,7 +194,7 @@ $$
 
 ---
 
-## The Benjamini–Hochberg (BH) Procedure
+### The Benjamini–Hochberg (BH) Procedure
 
 - The **BH procedure** is the most widely used method for controlling FDR.
 
@@ -320,7 +320,7 @@ plt.legend()
 plt.show()
 ```
 
-# The 3 Methods
+## The 3 Methods
 
 We compare three methods:
 
@@ -330,7 +330,7 @@ We compare three methods:
 
 ---
 
-## 1. FWER (Bonferroni)
+### 1. FWER (Bonferroni)
 
 - Controls:
 $$
@@ -351,7 +351,7 @@ $$
 
 ---
 
-## 2. BH (Benjamini–Hochberg)
+### 2. BH (Benjamini–Hochberg)
 
 - Controls:
 $$
@@ -374,7 +374,7 @@ $$
 
 ---
 
-## 3. BY (Benjamini–Yekutieli)
+### 3. BY (Benjamini–Yekutieli)
 
 - Modification of BH for **dependent tests**
 
@@ -392,7 +392,7 @@ $$
 
 ---
 
-## Visual Comparison
+### Visual Comparison
 
 ```{python}
 import numpy as np
@@ -432,9 +432,9 @@ plt.legend()
 plt.show()
 ```
 
-# Simulation
+## Simulation
 
-## Simulation: Comparing Methods
+### Simulation: Comparing Methods
 
 - Compare **FWER, BH, and BY**
 - Evaluate:
@@ -444,7 +444,7 @@ plt.show()
 
 ---
 
-## Simulation Setup
+### Simulation Setup
 
 - Total hypotheses: $m = 1000$ 
 - Proportion of true signals: $\pi_1 = 0.1$
@@ -592,7 +592,7 @@ print("BY has lower power than BH due to its conservativeness under dependence."
 print("Bonferroni has the lowest power, missing many true discoveries.")
 ```
 
-# Key Takeaways
+## Key Takeaways
 
 1. **Multiple testing is tricky**
    - Testing many hypotheses increases the chance of false positives.
@@ -619,7 +619,7 @@ print("Bonferroni has the lowest power, missing many true discoveries.")
    - No single “best” method — choose based on signal strength, test dependence, and desired strictness
    - FDR control methods like BH are often a good starting point for large-scale testing in data science.
 
-# References
+## References
 
 Efron, B. (2010). False discovery rate control. In Large‑scale inference: Empirical bayes methods
   for estimation, testing, and prediction (pp. 46–69). Cambridge University Press. https:
