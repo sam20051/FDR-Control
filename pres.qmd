@@ -14,11 +14,6 @@ format:
     geometry: 
       - top=30mm
       - left=20mm
-cite-method: citeproc
-link-citations: true
-suppress-bibliography: false
-bibliography: references.bib
-csl: apa.csl
 execute:
     warning: false
 ---
@@ -493,8 +488,15 @@ plt.show()
    - No single “best” method — choose based on **signal strength, test dependence, and desired strictness**
    - FDR control allows **practical, balanced decision-making** in large-scale testing
 
-
-[@genovese2004; @columbiaFDR; @efronLSIChapter4]
-
 # References
 
+Efron, B. (2010). False discovery rate control. In Large‑scale inference: Empirical bayes methods
+  for estimation, testing, and prediction (pp. 46–69). Cambridge University Press. https:
+  //utstat.toronto.edu/reid/sta2212s/2021/EfronLSIChapter4.pdf
+
+Genovese, C. R. (2004). A tutorial on false discovery control. Technical report, Carnegie Mellon
+  University.
+
+Public Health, C. U. M. S. of. (n.d.). False discovery rate. Web page. https://www.publichealth.
+  columbia.edu/research/population-health-methods/false-discovery-rate
+  15
