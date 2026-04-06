@@ -70,25 +70,19 @@ plt.show()
 
 - **FWER = Probability of at least one false positive**
 $$
-\[
 \text{FWER} = P(V \geq 1)
-\]
 $$
 
 - Goal: **Avoid any false discoveries**
 - Common method: **Bonferroni correction**
 
 $$
-\[
 \alpha_{adj} = \frac{\alpha}{m}
-\]
 $$
 
 - Reject if:
 $$
-\[
 p_i \leq \frac{\alpha}{m}
-\]
 $$
 
 ---
@@ -111,9 +105,7 @@ $$
 - Instead of eliminating all errors, control their proportion
 
 $$
-\[
 \text{FDR} = \mathbb{E} \left[ \frac{V}{R} \right]
-\]
 $$
 
 - Goal:
@@ -174,9 +166,7 @@ plt.show()
 
 - Total rejections:
 $$
-\[
 R = V + S
-\]
 $$
 
 ---
@@ -186,9 +176,7 @@ $$
 - The proportion of false discoveries among all discoveries:
 
 $$
-\[
 \text{FDP} = \frac{V}{R}
-\]
 $$
 
 - If no rejections (R = 0), define FDP = 0
@@ -204,9 +192,7 @@ $$
 - The expected value of FDP:
 
 $$
-\[
 \text{FDR} = \mathbb{E}\left[\frac{V}{R}\right]
-\]
 $$
 
 - This is what we aim to control
@@ -235,9 +221,7 @@ This makes FDR practical for real-world data science
   - 10 are false discoveries
 
 $$
-\[
 \text{FDP} = \frac{10}{100} = 0.10
-\]
 $$
 
 - Over many experiments:
@@ -282,16 +266,12 @@ We compare four methods:
 
 - Controls:
 $$
-\[
 P(V \geq 1)
-\]
 $$
 
 - Rule:
 $$
-\[
 p_i \leq \frac{\alpha}{m}
-\]
 $$
 
 - Pros:
@@ -307,18 +287,14 @@ $$
 
 - Controls:
 $$
-\[
 \text{FDR} = \mathbb{E}[V/R]
-\]
 $$
 
 - Procedure:
   1. Sort p-values
   2. Find largest \( k \) such that:
 $$
-\[
 p_{(k)} \leq \frac{k}{m}\alpha
-\]
 $$
 
 - Pros:
@@ -336,9 +312,7 @@ $$
 
 - Threshold:
 $$
-\[
 p_{(k)} \leq \frac{k}{m} \cdot \frac{\alpha}{\sum_{i=1}^m \frac{1}{i}}
-\]
 $$
 
 - Pros:
@@ -354,9 +328,7 @@ $$
 
 - Improves BH by estimating:
 $$
-\[
 \pi_0 = \text{proportion of true nulls}
-\]
 $$
 
 - Idea:
