@@ -14,8 +14,11 @@ format:
     geometry: 
       - top=30mm
       - left=20mm
-bibliography: references.bib
+cite-method: citeproc
 link-citations: true
+suppress-bibliography: false
+bibliography: references.bib
+csl: apa.csl
 execute:
     warning: false
 ---
@@ -493,5 +496,3 @@ plt.show()
 
 # References
 
-:::{.bibliography}
-:::
