@@ -493,5 +493,5 @@ plt.show()
 
 # References
 
-:::{#refs}
+:::{.bibliography}
 :::
