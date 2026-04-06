@@ -35,9 +35,11 @@ execute:
 - Each test uses significance level **α = 0.05**
 - Even if ALL null hypotheses are true:
 
+$$
 \[
 \text{Expected false positives} = 0.05 \times 1000 = 50
 \]
+$$
 
 - We may incorrectly reject **dozens of hypotheses**
 
@@ -67,28 +69,34 @@ plt.show()
 ## Classical Error Control: FWER
 
 - **FWER = Probability of at least one false positive**
+$$
 \[
 \text{FWER} = P(V \geq 1)
 \]
+$$
 
 - Goal: **Avoid any false discoveries**
 - Common method: **Bonferroni correction**
 
+$$
 \[
 \alpha_{adj} = \frac{\alpha}{m}
 \]
+$$
 
 - Reject if:
+$$
 \[
 p_i \leq \frac{\alpha}{m}
 \]
+$$
 
 ---
 
 ## Why FWER is Too Conservative
 
 - Example:
-  - \( m = 1000 \), \( \alpha = 0.05 \)
+  - $\( m = 1000 \), \( \alpha = 0.05 \)$
   - Bonferroni threshold = **0.00005**
 
 - Very hard to detect real effects
@@ -102,9 +110,11 @@ p_i \leq \frac{\alpha}{m}
 
 - Instead of eliminating all errors, control their proportion
 
+$$
 \[
 \text{FDR} = \mathbb{E} \left[ \frac{V}{R} \right]
 \]
+$$
 
 - Goal:
   - Allow some false positives
@@ -163,9 +173,11 @@ plt.show()
 | Do Not Reject H₀    | True Negative | False Negative |
 
 - Total rejections:
+$$
 \[
 R = V + S
 \]
+$$
 
 ---
 
@@ -173,9 +185,11 @@ R = V + S
 
 - The proportion of false discoveries among all discoveries:
 
+$$
 \[
 \text{FDP} = \frac{V}{R}
 \]
+$$
 
 - If no rejections (R = 0), define FDP = 0
 
@@ -189,9 +203,11 @@ R = V + S
 
 - The expected value of FDP:
 
+$$
 \[
 \text{FDR} = \mathbb{E}\left[\frac{V}{R}\right]
 \]
+$$
 
 - This is what we aim to control
 
@@ -218,9 +234,11 @@ This makes FDR practical for real-world data science
   - 90 are true discoveries
   - 10 are false discoveries
 
+$$
 \[
 \text{FDP} = \frac{10}{100} = 0.10
 \]
+$$
 
 - Over many experiments:
   - The average FDP ≈ FDR
@@ -263,14 +281,18 @@ We compare four methods:
 ## 1. FWER (Bonferroni)
 
 - Controls:
+$$
 \[
 P(V \geq 1)
 \]
+$$
 
 - Rule:
+$$
 \[
 p_i \leq \frac{\alpha}{m}
 \]
+$$
 
 - Pros:
   - Very safe (almost no false positives)
@@ -284,16 +306,20 @@ p_i \leq \frac{\alpha}{m}
 ## 2. BH (Benjamini–Hochberg)
 
 - Controls:
+$$
 \[
 \text{FDR} = \mathbb{E}[V/R]
 \]
+$$
 
 - Procedure:
   1. Sort p-values
   2. Find largest \( k \) such that:
+  $$
 \[
 p_{(k)} \leq \frac{k}{m}\alpha
 \]
+$$
 
 - Pros:
   - Good balance of power and error control
@@ -309,9 +335,11 @@ p_{(k)} \leq \frac{k}{m}\alpha
 - Modification of BH for **dependent tests**
 
 - Threshold:
+$$
 \[
 p_{(k)} \leq \frac{k}{m} \cdot \frac{\alpha}{\sum_{i=1}^m \frac{1}{i}}
 \]
+$$
 
 - Pros:
   - Valid under arbitrary dependence
@@ -325,9 +353,11 @@ p_{(k)} \leq \frac{k}{m} \cdot \frac{\alpha}{\sum_{i=1}^m \frac{1}{i}}
 ## 4. Storey Method (ST / q-values)
 
 - Improves BH by estimating:
+$$
 \[
 \pi_0 = \text{proportion of true nulls}
 \]
+$$
 
 - Idea:
   - If many hypotheses are false → increase power
@@ -337,7 +367,7 @@ p_{(k)} \leq \frac{k}{m} \cdot \frac{\alpha}{\sum_{i=1}^m \frac{1}{i}}
   - Adaptive
 
 - Cons:
-  - Requires estimating \(\pi_0\)
+  - Requires estimating $\( \pi_0 \)$
   - Can be unstable if estimation is poor
 
 ---
@@ -384,8 +414,8 @@ Goal:
 
 ## Simulation Setup
 
-- Total hypotheses: \( m = 1000 \)
-- Proportion of true signals: \( \pi_1 = 0.1 \)
+- Total hypotheses: $( m = 1000 \)$ 
+- Proportion of true signals: $\( \pi_1 = 0.1 \)$
 - Generate:
   - Null p-values ~ Uniform(0,1)
   - Signal p-values ~ Beta(0.5, 1)
