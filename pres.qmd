@@ -36,9 +36,7 @@ execute:
 - Even if ALL null hypotheses are true:
 
 $$
-\[
 \text{Expected false positives} = 0.05 \times 1000 = 50
-\]
 $$
 
 - We may incorrectly reject **dozens of hypotheses**
@@ -90,7 +88,7 @@ $$
 ## Why FWER is Too Conservative
 
 - Example:
-  - $\( m = 1000 \), \( \alpha = 0.05 \)$
+  - $m = 1000, \alpha = 0.05$
   - Bonferroni threshold = **0.00005**
 
 - Very hard to detect real effects
@@ -339,7 +337,7 @@ $$
   - Adaptive
 
 - Cons:
-  - Requires estimating $\( \pi_0 \)$
+  - Requires estimating $\pi_0$
   - Can be unstable if estimation is poor
 
 ---
@@ -386,8 +384,8 @@ Goal:
 
 ## Simulation Setup
 
-- Total hypotheses: $( m = 1000 \)$ 
-- Proportion of true signals: $\( \pi_1 = 0.1 \)$
+- Total hypotheses: $m = 1000$ 
+- Proportion of true signals: $\pi_1 = 0.1$
 - Generate:
   - Null p-values ~ Uniform(0,1)
   - Signal p-values ~ Beta(0.5, 1)
