@@ -4,7 +4,7 @@ author: "Scott McCabe"
 toc: true
 number-sections: true
 highlight-style: pygments
-format: 
+format:
   html: 
     code-fold: true
     html-math-method: katex
@@ -14,11 +14,13 @@ format:
     geometry: 
       - top=30mm
       - left=20mm
+bibliography: references.bib
+link-citations: true
 execute:
     warning: false
 ---
 # Why False Discovery Rate Matters
-## Why Do We Need FDR Control?
+**Why Do We Need FDR Control?**
 
 - In modern data science, we often test hundreds or thousands of hypotheses
 - Examples:
@@ -29,7 +31,7 @@ execute:
 
 ---
 
-## The Multiple Testing Problem
+**The Multiple Testing Problem**
 
 - Suppose we test **m = 1000 hypotheses**
 - Each test uses significance level **α = 0.05**
@@ -39,11 +41,11 @@ $$
 \text{Expected false positives} = 0.05 \times 1000 = 50
 $$
 
-- We may incorrectly reject **dozens of hypotheses**
+- We may incorrectly reject dozens of hypotheses
 
 ---
 
-## Intuition: False Positives Add Up
+**False Positives Add Up**
 
 ```{python}
 import numpy as np
@@ -85,7 +87,7 @@ $$
 
 ---
 
-## Why FWER is Too Conservative
+**Why FWER is Too Conservative**
 
 - Example:
   - $m = 1000, \alpha = 0.05$
@@ -94,7 +96,7 @@ $$
 - Very hard to detect real effects
 - Leads to:
   - Few rejections
-  - Many **missed true signals (low power)**
+  - Many missed true signals (low power)
 
 ---
 
@@ -122,7 +124,7 @@ $$
 
 ---
 
-## Visual Comparison
+**Visual Comparison**
 
 ```{python}
 import numpy as np
@@ -153,7 +155,7 @@ plt.show()
 
 # Definitions
 
-## Measuring Errors in Multiple Testing
+**Measuring Errors in Multiple Testing**
 
 - When testing many hypotheses, we track:
 
@@ -201,7 +203,7 @@ $$
 
 ---
 
-## Why Expectation?
+**Why Expectation?**
 
 - FDP varies from dataset to dataset
 - We cannot control it exactly every time
@@ -212,7 +214,7 @@ This makes FDR practical for real-world data science
 
 ---
 
-## Quick Example
+**Example**
 
 - Suppose we reject 100 hypotheses:
   - 90 are true discoveries
@@ -227,29 +229,12 @@ $$
 
 ---
 
-## Key Intuition
-
 - FDR does NOT eliminate false positives  
 - It **controls their proportion**
 
 > “Among all discoveries, most should be correct.”
 
----
-
-## Transition
-
-- Now that we understand FDR…
-
-How do we actually control it in practice?  
-Let’s look at 4 different methods:
-- BH
-- BY
-- Storey (ST)
-- FWER (baseline)
-
 # The 4 Methods
-
-## Four Approaches to Error Control
 
 We compare four methods:
 
@@ -477,5 +462,33 @@ plt.show()
 
 
 # Key Takeaways
+
+## 🎯 Key Takeaways: False Discovery Rate Control
+
+1. **Multiple testing is tricky**
+   - Testing many hypotheses increases false positives
+   - Traditional p-value thresholds do not control the proportion of errors
+
+2. **FDR vs FWER**
+   - FWER: strict, very few false positives, low power
+   - FDR: controls the expected proportion of false discoveries, higher power
+
+3. **Choosing a method**
+   | Method | When to Use |
+   |--------|------------|
+   | Bonferroni (FWER) | Very strict control, few tests |
+   | BH (Benjamini–Hochberg) | Default FDR control, independent/weakly dependent tests |
+   | BY (Benjamini–Yekutieli) | Dependent tests |
+   | Storey (q-values) | Many true signals, adaptive, more power |
+
+4. **Simulation confirms intuition**
+   - BH and Storey achieve more discoveries while controlling FDR
+   - Bonferroni is overly conservative
+   - BY protects against dependence at the cost of power
+
+5. **Data science framing**
+   - No single “best” method — choose based on **signal strength, test dependence, and desired strictness**
+   - FDR control allows **practical, balanced decision-making** in large-scale testing
+
 
 # References
