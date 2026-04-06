@@ -494,5 +494,7 @@ plt.show()
    - FDR control allows **practical, balanced decision-making** in large-scale testing
 
 
+[@genovese2004; @columbiaFDR; @efronLSIChapter4]
+
 # References
 
